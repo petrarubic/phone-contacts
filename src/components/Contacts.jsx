@@ -4,6 +4,7 @@ import { getContacts } from "../service/contacts";
 import { useContactsStore } from "../store/contacts-store";
 import { shallow } from "zustand/shallow";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
+import Search from "./Search";
 
 const Contacts = () => {
   const { contacts, setContacts } = useContactsStore((state) => {
@@ -15,6 +16,13 @@ const Contacts = () => {
 
   const [pageSize, setPageSize] = useState(5);
   const [page, setPage] = useState(1);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    setPage(1);
+  };
 
   const { isLoading, isError, data } = useQuery("contacts", async () => {
     try {
@@ -31,6 +39,10 @@ const Contacts = () => {
     }
   }, [data]);
 
+  const filteredContacts = contacts.filter((contact) =>
+    contact.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (isLoading) {
     return <p>Loading contacts...</p>;
   }
@@ -39,7 +51,7 @@ const Contacts = () => {
     return <p>Error loading contacts.</p>;
   }
 
-  const numContacts = contacts.length;
+  const numContacts = filteredContacts.length;
   const numPages = Math.ceil(numContacts / pageSize);
   const startIndex = (page - 1) * pageSize;
   const endIndex = Math.min(startIndex + pageSize, numContacts);
@@ -49,19 +61,20 @@ const Contacts = () => {
 
   return (
     <div className="max-w-screen-lg mx-auto">
-      <div className="flex items-center justify-end my-4">
-        <label htmlFor="page-size" className="mr-2">
-          Show contacts:
-        </label>
-        <select
-          id="page-size"
-          value={pageSize}
-          onChange={(e) => setPageSize(parseInt(e.target.value))}
-          className="p-1 border rounded"
-        >
-          <option value="5">5</option>
-          <option value="10">10</option>
-        </select>
+      <div className="flex justify-between my-4 items-center">
+        <Search onSearch={handleSearch} />
+        <div className="text-sm">
+          <span>Show </span>
+          <select
+            value={pageSize}
+            onChange={(e) => setPageSize(parseInt(e.target.value))}
+            className="p-1 border rounded"
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+          </select>
+          <span> entries</span>
+        </div>
       </div>
       <table className="w-full table-auto border-collapse border overflow-x-scroll">
         <thead className="border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
@@ -73,7 +86,7 @@ const Contacts = () => {
           </tr>
         </thead>
         <tbody>
-          {contacts.slice(startIndex, endIndex).map((contact) => (
+          {filteredContacts.slice(startIndex, endIndex).map((contact) => (
             <tr
               key={contact.id}
               className="hover:bg-gray-100 border-b flex-nowrap"
@@ -95,7 +108,7 @@ const Contacts = () => {
         </tbody>
       </table>
       <div className="flex justify-between mt-4 items-center">
-        <div className="text-xs">
+        <div className="text-sm">
           Showing {startIndex + 1} to {endIndex} of {numContacts} contacts
         </div>
         <div>
