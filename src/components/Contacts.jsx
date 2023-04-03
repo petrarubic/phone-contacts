@@ -5,6 +5,12 @@ import { useContactsStore } from "../store/contacts-store";
 import { shallow } from "zustand/shallow";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
 import Search from "./Search";
+import Modal from "./Modal";
+
+const buttonWrapper =
+  "p-1 border rounded mr-2 hover:text-white hover:bg-gray-300 hover:border-gray-300 disabled:hover:border-gray-200 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400 transition-colors duration-300";
+const tableHeader =
+  "border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider";
 
 const Contacts = () => {
   const { contacts, setContacts } = useContactsStore((state) => {
@@ -18,6 +24,7 @@ const Contacts = () => {
   const [page, setPage] = useState(1);
 
   const [searchQuery, setSearchQuery] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -62,7 +69,15 @@ const Contacts = () => {
   return (
     <div className="max-w-screen-lg mx-auto">
       <div className="flex justify-between my-4 items-center">
-        <Search onSearch={handleSearch} />
+        <div className="flex space-x-8">
+          <Search onSearch={handleSearch} />
+          <button
+            className={buttonWrapper}
+            onClick={() => setIsModalOpen(true)}
+          >
+            <span className="px-2 py-2">Add contact</span>
+          </button>
+        </div>
         <div className="text-sm">
           <span>Show </span>
           <select
@@ -77,7 +92,7 @@ const Contacts = () => {
         </div>
       </div>
       <table className="w-full table-auto border-collapse border overflow-x-scroll">
-        <thead className="border-b-2 border-gray-200 bg-gray-100 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+        <thead className={tableHeader}>
           <tr>
             <th className="px-5 py-3">Name</th>
             <th className="px-5 py-3">Country</th>
@@ -115,19 +130,20 @@ const Contacts = () => {
           <button
             onClick={handlePrevPage}
             disabled={page === 1}
-            className="p-1 border rounded mr-2 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400"
+            className={buttonWrapper}
           >
             <FaArrowLeft />
           </button>
           <button
             onClick={handleNextPage}
             disabled={page === numPages}
-            className="p-1 border rounded"
+            className={buttonWrapper}
           >
             <FaArrowRight />
           </button>
         </div>
       </div>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}></Modal>
     </div>
   );
 };
