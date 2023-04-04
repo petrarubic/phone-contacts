@@ -4,8 +4,9 @@ import { getContacts } from "../service/contacts";
 import { useContactsStore } from "../store/contacts-store";
 import { shallow } from "zustand/shallow";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa";
-import Search from "./Search";
-import Modal from "./Modal";
+import Search from "./shared/Search";
+import Modal from "./shared/Modal";
+import ContactsForm from "./forms/ContactsForm";
 
 const buttonWrapper =
   "p-1 border rounded mr-2 hover:text-white hover:bg-gray-300 hover:border-gray-300 disabled:hover:border-gray-200 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:text-gray-400 transition-colors duration-300";
@@ -143,7 +144,9 @@ const Contacts = () => {
           </button>
         </div>
       </div>
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}></Modal>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <ContactsForm onSubmit={() => setIsModalOpen(false)} />
+      </Modal>
     </div>
   );
 };
