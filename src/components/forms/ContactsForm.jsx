@@ -22,7 +22,12 @@ const ContactsForm = ({ onSubmit }) => {
     };
   }, shallow);
 
-  const setContacts = useContactsStore((state) => state.setContacts);
+  const { contacts, setContacts } = useContactsStore((state) => {
+    return {
+      contacts: state.contacts,
+      setContacts: state.setContacts,
+    };
+  }, shallow);
 
   useEffect(() => {
     getCountries().then((data) => setCountries(data));
@@ -32,7 +37,7 @@ const ContactsForm = ({ onSubmit }) => {
     try {
       const response = await addContact(values);
       console.log(response);
-      setContacts((contacts) => [...contacts, values]);
+      setContacts([...contacts, values]);
       onSubmit();
       setSubmitting(false);
     } catch (error) {
