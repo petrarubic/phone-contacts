@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form } from "formik";
 import { contactsValidationSchema } from "./validations";
 import { useCountriesStore } from "../../store/countries-store";
 import { getCountries } from "../../service/countries";
 import { addContact } from "../../service/contacts";
 import { useContactsStore } from "../../store/contacts-store";
 import { shallow } from "zustand/shallow";
+import TextInput from "../inputs/TextInput";
+import SelectInput from "../inputs/SelectInput";
 
 const initialValues = {
   name: "",
@@ -65,76 +67,14 @@ const ContactsForm = ({ onSubmit }) => {
       >
         {({ isSubmitting }) => (
           <Form className="space-y-4 mt-5">
-            <div className="flex flex-col">
-              <label htmlFor="name" className="mb-1">
-                Name
-              </label>
-              <Field
-                type="text"
-                name="name"
-                className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-gray-500"
-              />
-              <ErrorMessage
-                name="name"
-                component="div"
-                className="text-red-500 absolute"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label htmlFor="country" className="mb-1">
-                Country
-              </label>
-              <Field
-                as="select"
-                name="country"
-                className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-gray-500"
-              >
-                <option value="">Select a country</option>
-                {countries.map((country) => (
-                  <option key={country.code} value={country.name}>
-                    {country.name}
-                  </option>
-                ))}
-              </Field>
-              <ErrorMessage
-                name="country"
-                component="div"
-                className="text-red-500 absolute"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label htmlFor="city" className="mb-1">
-                City
-              </label>
-              <Field
-                type="text"
-                name="city"
-                className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-gray-500"
-              />
-              <ErrorMessage
-                name="city"
-                component="div"
-                className="text-red-500 absolute"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label htmlFor="address" className="mb-1">
-                Address
-              </label>
-              <Field
-                type="text"
-                name="address"
-                className="px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-gray-500"
-              />
-              <ErrorMessage
-                name="address"
-                component="div"
-                className="text-red-500 absolute"
-              />
-            </div>
+            <TextInput label="Name" name="name" />
+            <SelectInput
+              label="Country"
+              name="country"
+              options={countryOptions}
+            />
+            <TextInput label="City" name="city" />
+            <TextInput label="Address" name="address" />
 
             <button
               type="submit"
