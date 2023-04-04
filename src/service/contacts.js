@@ -16,3 +16,13 @@ export async function getContacts() {
     .then((res) => res.data)
     .catch((error) => console.log(error));
 }
+
+// POST new contact data
+export async function addContact(data) {
+  return await apiClient
+    .post(baseUrl, data)
+    .then((res) => res.data)
+    .catch((error) => {
+      console.error(error);
+    });
+}
